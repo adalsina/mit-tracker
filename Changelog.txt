@@ -1,0 +1,9 @@
+Now the video path, the size of a pixel in nanometers and the temporal separation between frames are given as inputs to the system.
+
+The program now automatically calculates the number of frames.
+
+The output is in units of nanometers and seconds.
+
+It is also possible to resize the window where the edited video is displayed.
+
+The code also writes a header explaining what is each one of the columns that we obtain in the csv file.

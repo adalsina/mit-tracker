@@ -204,10 +204,10 @@ def Matching(odd1, odd2, odd3, odd_r, new_x, new_y, j, Area):
         pass
     if dist1 < dist2:
         z= [next_py,next_px,l1,l2, int(dist1*1000)/1000  , l3 ]
-        v= [next_py,next_px, speed_x, speed_y,l1,l2 , int(dist1*1000)/1000  ,l3 ]
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist1*1000)/1000  ,l3 ]
     else:
         z= [next_py,next_px,l1,l2, int(dist2*1000)/1000  , l3 ]
-        v= [next_py,next_px, speed_x, speed_y,l1,l2 , int(dist2*1000)/1000  ,l3 ]        
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist2*1000)/1000  ,l3 ]        
     return  z,v
 #using for later frame
 def MatchingII(odd1, odd2, odd3, odd4, new_x, new_y, j, Area):
@@ -245,10 +245,10 @@ def MatchingII(odd1, odd2, odd3, odd4, new_x, new_y, j, Area):
 
     if dist1 < dist2:
         z= [next_py,next_px,l1,l2, int(dist1*1000)/1000 , l3 ]
-        v= [next_py,next_px, speed_x, speed_y,l1,l2 , int(dist1*1000)/1000  ,l3 ]
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist1*1000)/1000  ,l3 ]
     else:
         z= [next_py,next_px,l1,l2, int(dist2*1000)/1000  , l3 ]
-        v= [next_py,next_px, speed_x, speed_y,l1,l2 , int(dist2*1000)/1000  ,l3 ]
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist2*1000)/1000  ,l3 ]
     return  z,v, status
 
 # %%       Cheking for fusion
@@ -345,12 +345,14 @@ def unique_rows(data):
 
 # %%    The main loop
 
-videofile=input("Please enter the location of the video file:")
+videofile=input("Please enter the path of the video file: ")
 
 cap = cv2.VideoCapture(r'%s' %videofile)
 
-pixelsize=input("Please enter the pixel size in nm:")
-seco=input("Please enter the time separation between frames in s:")
+pixelsize=np.float(input("Please enter the pixel size in nm: "))
+seco=np.float(input("Please enter the time separation between frames in s: "))
+
+foo=open("Output.csv", "w")
 #cv2.namedWindow('original')
 #cv2.createTrackbar('Threshold','video',0,255,nothing)
 #for i in range(380):
@@ -527,12 +529,8 @@ while True:
 
         ## Output result to a csv file
         
-        with open("collection_r2.csv", "a") as f:
-            writer = csv.writer(f)
-            writer.writerows(collection_r2[-1])
-        with open("collection_velocity.csv", "a") as foo:
-            boo = csv.writer(foo)
-            boo.writerows(collection_velocity[-1])
+        boo = csv.writer(foo)
+        boo.writerows(collection_velocity[-1])
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
