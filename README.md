@@ -7,4 +7,4 @@ Run the python file. Input the path file where your video is located, the size o
 
 The program will then show the edited video and will output a csv file containing the positions (in nanometers) and the instantaneous velocity of the fluorescence centroids of each mitochondria for each frame.
 
-
+Created by Wai Kin Wong and Wu Ming Lai.
