@@ -20,6 +20,7 @@ Event_S = []
 r1, r2, r3, r4, r5 = [], [], [], [], []
 m_pt = 175
 kernel = np.ones((3,3),np.uint8)
+saveframe=0
 '''
 R1 = [0:70,90:200],
 R2 = [100:180,270:400],
@@ -204,10 +205,10 @@ def Matching(odd1, odd2, odd3, odd_r, new_x, new_y, j, Area):
         pass
     if dist1 < dist2:
         z= [next_py,next_px,l1,l2, int(dist1*1000)/1000  , l3 ]
-        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist1*1000)/1000  ,l3 ]
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2,l3 ]
     else:
         z= [next_py,next_px,l1,l2, int(dist2*1000)/1000  , l3 ]
-        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist2*1000)/1000  ,l3 ]        
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2,l3 ]        
     return  z,v
 #using for later frame
 def MatchingII(odd1, odd2, odd3, odd4, new_x, new_y, j, Area):
@@ -245,10 +246,10 @@ def MatchingII(odd1, odd2, odd3, odd4, new_x, new_y, j, Area):
 
     if dist1 < dist2:
         z= [next_py,next_px,l1,l2, int(dist1*1000)/1000 , l3 ]
-        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist1*1000)/1000  ,l3 ]
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 ,l3 ]
     else:
         z= [next_py,next_px,l1,l2, int(dist2*1000)/1000  , l3 ]
-        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 , int(dist2*1000)/1000  ,l3 ]
+        v= [next_py*pixelsize,next_px*pixelsize, speed_x, speed_y,l1,l2 ,l3 ]
     return  z,v, status
 
 # %%       Cheking for fusion
@@ -346,13 +347,20 @@ def unique_rows(data):
 # %%    The main loop
 
 videofile=input("Please enter the path of the video file: ")
+name=videofile.replace('.avi','')
 
 cap = cv2.VideoCapture(r'%s' %videofile)
+tframes = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 pixelsize=np.float(input("Please enter the pixel size in nm: "))
 seco=np.float(input("Please enter the time separation between frames in s: "))
+cv2.namedWindow("Edited", cv2.WINDOW_NORMAL)
 
-foo=open("Output.csv", "w")
+foo=open("Output-"+str(name)+".csv", "w")
+boo = csv.writer(foo)
+boo.writerow(["X","Y", "Vx", "Vy", "Previous labeling", "Current labeling", "Original labeling"])
+
+
 #cv2.namedWindow('original')
 #cv2.createTrackbar('Threshold','video',0,255,nothing)
 #for i in range(380):
@@ -517,19 +525,23 @@ while True:
         
         ## Displaying useful information on the video
             cv2.putText(vis,str(r4[i][-3])+''+str(r4[i][-2]),(int(r4[i][0])-40,int(r4[i][1])+20), font, 0.5,(255,255,0),1,cv2.LINE_AA)    
-        cv2.putText(vis,"Frame : "+str(int(cap.get(1)))+"/2000",(5,245), font, 0.6,(255,255,0),1,cv2.LINE_AA)
+        cv2.putText(vis,"Frame : "+str(int(cap.get(1)))+"/"+str(tframes),(5,245), font, 0.6,(255,255,0),1,cv2.LINE_AA) 
 
         r1 , r2 ,r3 , r4 , r5 = r2 , r3 , r4 , r5 , []        
         collection_r2.extend([r4])
         collection_velocity.extend([velocity])
         ## Show video
 #        cv2.imshow('original',img)
-        cv2.imshow('edited',vis)
+        cv2.imshow('Edited',vis)
 
+        ## Save the first frame
+        if saveframe==1:
+        	cv2.imwrite("First frame.png",vis)
+        saveframe+=1
 
         ## Output result to a csv file
         
-        boo = csv.writer(foo)
+        
         boo.writerows(collection_velocity[-1])
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
